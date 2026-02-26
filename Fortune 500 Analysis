@@ -1,0 +1,39 @@
+-- 1. [filter using WHERE with AND, OR, IN, or NOT IN] What tech companies offer healthcare benefits and at least 20 days of paid time off?
+SELECT company_name,healthcare_benefits,paid_time_off_days
+FROM fortune_companies
+WHERE industry = 'Technology'
+AND healthcare_benefits = 1 
+AND paid_time_off_days >= 20
+ORDER BY paid_time_off_days DESC;
+
+-- 2. [calculation and alias]How many paid time off days does each company have? Including maternity leave weeks. 
+SELECT 
+    company_name,
+    maternity_leave_weeks, paid_time_off_days,
+    (maternity_leave_weeks * 7) AS maternity_leave_days,
+    paid_time_off_days + (maternity_leave_weeks * 7) AS total_leave_days
+FROM fortune_companies
+ORDER BY total_leave_days DESC;
+-- 3. [CASE]Which industries have high, medium, and lower employee tenure's?
+SELECT company_name,avg_employee_tenure,
+CASE WHEN avg_employee_tenure >7 THEN 'High Tenure'
+WHEN avg_employee_tenure >5 THEN 'Medium Tenure'
+ELSE 'Low Tenure'
+END AS Tenures
+FROM fortune_companies
+ORDER BY avg_employee_tenure DESC;
+-- 4. [HAVING] What is the average revenue by industry? I added functions like AVG and ROUND to solve.
+SELECT industry
+,ROUND (AVG (revenue)) AS avg_revenue_rounded
+FROM fortune_companies
+GROUP BY industry
+ORDER BY avg_revenue_rounded DESC;
+
+--5. Use WHERE with one of the following to filter the data in an interesting way. Which company, between healthcare and retail, has more employees?
+ 
+SELECT industry,
+SUM(employees) AS total_employees
+FROM fortune_companies
+WHERE industry IN ('Healthcare','Retail')
+GROUP BY industry
+ORDER BY employees DESC;
